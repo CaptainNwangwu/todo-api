@@ -1,6 +1,10 @@
+/* This code snippet is setting up a web application using C# with ASP.NET Core. Here is a breakdown of
+what each part of the code is doing: */
 using Microsoft.EntityFrameworkCore;
-using TodoApi.Data;
-using TodoApi.Models;
+using Server.Data;
+using Server.Models;
+using Server.Services;
+using Server.Controllers;
 
 /* 
 *   ====== 1. CREATE BUILDER ======
@@ -11,6 +15,16 @@ var builder = WebApplication.CreateBuilder(args);
 /*
 *   ====== 2. REGISTER SERVICES (Dependency Injection) ======
 *   Register services that will be injected into endpoints
+*/
+
+// Register API Controller
+builder.Services.AddControllers();
+
+// Register Token Service for Authentication
+builder.Services.AddScoped<ITokenService, JwtTokenService>();
+
+/* TODO: Register 
+JWTbuilder.Services.AddAuthentication().AddJwtBearer
 */
 
 // Register DBContext with Postgres
@@ -52,30 +66,12 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseCors();
+app.UseAuthentication();
+app.UseAuthorization();
+app.MapControllers();
 
 // Health check endpoint
 app.MapGet("/", () => "Todo API is running!");
 
-// Get All Users
-app.MapGet("/users", async (TodoDbContext db) =>
-{
-    return await db.Users.ToListAsync();
-});
-
-// Get User by ID
-app.MapGet("/users/{id}", async (int id, TodoDbContext db) =>
-{
-    var user = await db.Users.FindAsync(id);
-    return user is not null ? Results.Ok(user) : Results.NotFound();
-});
-
-// Create New User
-app.MapPost("/users", async (User user, TodoDbContext db) =>
-{
-    db.Users.Add(user);
-    await db.SaveChangesAsync();
-    return Results.Created($"/users/{user.Id}", user);
-});
-
-
+// TODO: Get All Users
 app.Run();

@@ -1,58 +1,55 @@
 using Microsoft.EntityFrameworkCore;
-using TodoApi.Models;
+using Server.Models;
 
-namespace TodoApi.Data;
-
-public class TodoDbContext : DbContext
+namespace Server.Data
 {
-    public TodoDbContext(DbContextOptions<TodoDbContext>  options) : base(options)
+    public class TodoDbContext(DbContextOptions<TodoDbContext> options) : DbContext(options)
     {
-        // Connection String, etc...
-    }
-    
-    // Database Tables
-    public DbSet<User> Users {get; set;}
-    public DbSet<Todo> Todos {get; set;}
+
+        // Database Tables
+        public DbSet<User> Users { get; set; }
+        public DbSet<Todo> Todos { get; set; }
 
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        // Configure User Table (Entity)
-        modelBuilder.Entity<User> (entity =>
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Primary Key (Id)
-            entity.HasKey(user => user.Id);
+            // Configure User Table (Entity)
+            modelBuilder.Entity<User>(entity =>
+            {
+                // Primary Key (Id)
+                entity.HasKey(user => user.Id);
 
-            // Unique Constaint on Email + Index (Frequent Referencing in Register/Login)
-            entity.HasIndex(user => user.Email).IsUnique();
-            
-            // Constraints
-            entity.Property(user => user.Name).HasMaxLength(255);
-            entity.Property(user => user.Email).HasMaxLength(255).IsRequired();
-            entity.Property(user => user.Password).HasMaxLength(255).IsRequired();
-        });
+                // Unique Constaint on Email + Index (Frequent Referencing in Register/Login)
+                entity.HasIndex(user => user.Email).IsUnique();
 
-        // Configure Todos Table
-        modelBuilder.Entity<Todo>(entity => 
-        {
-            entity.HasKey(e => e.Id);
+                // Constraints
+                entity.Property(user => user.Name).HasMaxLength(255);
+                entity.Property(user => user.Email).HasMaxLength(255).IsRequired();
+                entity.Property(user => user.Password).HasMaxLength(255).IsRequired();
+            });
+
+            // Configure Todos Table
+            modelBuilder.Entity<Todo>(entity =>
+            {
+                entity.HasKey(e => e.Id);
 
 
-            // Constraints
-            entity.Property(todo => todo.Title).HasMaxLength(255).IsRequired();
-            // No Constraints for Description Column (Yet)
+                // Constraints
+                entity.Property(todo => todo.Title).HasMaxLength(255).IsRequired();
+                // No Constraints for Description Column (Yet)
 
-            // Store TodoStatus enum as a string (rather than implicitly as an int)
-            entity.Property(todo => todo.Status).HasConversion<string>();
+                // Store TodoStatus enum as a string (rather than implicitly as an int)
+                entity.Property(todo => todo.Status).HasConversion<string>();
 
-            
-            // Relationship: Todo -> User (Many-to-one)
-            entity.HasOne(todo => todo.User)      // Each Todo has ONE User
-                    .WithMany(user => user.Todos)   // Each User has MANY Todos
-                    .HasForeignKey(todo => todo.UserId)
-                    .OnDelete(DeleteBehavior.Cascade);
 
-        });
+                // Relationship: Todo -> User (Many-to-one)
+                entity.HasOne(todo => todo.User)      // Each Todo has ONE User
+                        .WithMany(user => user.Todos)   // Each User has MANY Todos
+                        .HasForeignKey(todo => todo.UserId)
+                        .OnDelete(DeleteBehavior.Cascade);
+
+            });
+        }
+
     }
-
 }

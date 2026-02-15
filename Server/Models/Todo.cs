@@ -1,4 +1,4 @@
-namespace TodoApi.Models;
+namespace Server.Models;
 
 public enum TodoStatus
 {
