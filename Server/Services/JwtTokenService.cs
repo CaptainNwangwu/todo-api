@@ -8,7 +8,6 @@ using System.IdentityModel.Tokens.Jwt;
 
 namespace Server.Services;
 
-
 public class JwtTokenService(IConfiguration config) : ITokenService
 {
     private readonly IConfiguration _config = config;
@@ -26,15 +25,18 @@ public class JwtTokenService(IConfiguration config) : ITokenService
     /// </returns>
     public string GenerateToken(User user)
     {
-        string SecretKey = _config["JwtSettings:SecretKey"] ?? throw new InvalidOperationException("JwtSettings:SecretKey is not configured");
-        string Issuer = _config["JwtSettings:Issuer"] ?? throw new InvalidOperationException("JwtSettings:Issuer is not configured.");
-        string Audience = _config["JwtSettings:Audience"] ?? throw new InvalidOperationException("JwtSettings:Audience is not configured.");
-        int ExpirationHours = int.Parse(_config["JwtSettings:ExpirationHours"] ?? throw new InvalidOperationException("JwtSettings:ExperationHours is not configured."));
-        var Claims = new[]
-        {
+        string SecretKey = _config["JwtSettings:SecretKey"] ??
+            throw new InvalidOperationException("JwtSettings:SecretKey is not configured");
+        string Issuer = _config["JwtSettings:Issuer"] ??
+            throw new InvalidOperationException("JwtSettings:Issuer is not configured.");
+        string Audience = _config["JwtSettings:Audience"] ??
+            throw new InvalidOperationException("JwtSettings:Audience is not configured.");
+        int ExpirationHours = int.Parse(_config["JwtSettings:ExpirationHours"] ??
+            throw new InvalidOperationException("JwtSettings:ExperationHours is not configured."));
+        var Claims = new[] {
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new Claim(ClaimTypes.Email, user.Email)
-        };
+    };
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(SecretKey));
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);

@@ -5,4 +5,13 @@ Accept: application/json
 
 ###
 
-POST {{server_HostAddress}}/
+POST {{server_HostAddress}}/api/auth/register
+Content-Type: application/json
+
+{
+    "Name": "CJ Nwangwu",
+    "Email": "captainnwangwu@gmail.com",
+    "Password": "CodingRocks247!"
+}
+
+###

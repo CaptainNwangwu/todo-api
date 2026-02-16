@@ -23,7 +23,9 @@ builder.Services.AddControllers();
 // Register Token Service for Authentication
 builder.Services.AddScoped<ITokenService, JwtTokenService>();
 
-/* TODO: Register 
+builder.Services.AddScoped<IPasswordHasher, BCryptPasswordHasher>();
+
+/* TODO: JWT Auth 
 JWTbuilder.Services.AddAuthentication().AddJwtBearer
 */
 

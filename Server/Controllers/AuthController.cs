@@ -1,6 +1,7 @@
-using Server.DTOs;
 using Server.Data;
+using Server.DTOs;
 using Server.Models;
+using Server.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,56 +14,63 @@ namespace Server.Controllers
     {
         private readonly TodoDbContext _db = db;
 
-
         /// <summary>
-        /// This C# function retrieves a user from a database by their ID and returns either the user object or
-        /// a "Not Found" response.
+        /// The Register method in C# handles user registration by validating input, checking email uniqueness,
+        /// hashing the password, and saving the user to the database.
         /// </summary>
-        /// <param name="id">The `id` parameter in the `GetUserByID` method represents the unique identifier of
-        /// the user that you want to retrieve from the database. This method is an HTTP GET endpoint that takes
-        /// an integer `id` as a route parameter in the URL to fetch the user with the corresponding ID from
-        /// the</param>
+        /// <param name="RegisterRequest">RegisterRequest is a class that likely contains properties for the
+        /// data needed to register a user, such as Name, Email, and Password. It is used as a parameter in the
+        /// Register method to receive the registration data from the client.</param>
+        /// <param name="IPasswordHasher">The `IPasswordHasher` interface is typically used for hashing
+        /// passwords securely in ASP.NET Core applications. In your code snippet, you are injecting an
+        /// implementation of the `IPasswordHasher` interface named `BCryptPasswordHasher` using the
+        /// `[FromServices]` attribute.</param>
         /// <returns>
-        /// If the user with the specified `id` is found in the database, the `Ok` response with the user object
-        /// will be returned. If the user is not found (i.e., `null`), a `NotFound` response will be returned.
+        /// The Register method is returning a response with the newly registered user's information, including
+        /// their ID, name, and email. The response is created using the RegisterResponse model and is returned
+        /// with a status code of 201 (Created) using the CreatedAtAction method.
         /// </returns>
-        [HttpGet("users/{id}")]
-        public async Task<IActionResult> GetUserById(int id)
-        {
-            var user = await _db.Users.FindAsync(id);
-            return user is not null ? Ok(user) : NotFound();
-        }
-
         [HttpPost("register")]
-        public async Task<IActionResult> Register(RegisterRequest request)
+        public async Task<IActionResult> Register(RegisterRequest request,
+        [FromServices] IPasswordHasher BCryptPasswordHasher)
         {
-            // TODO: Implement Registration Logic
-            // return Ok(new { message = "Registration Endpoint Access Successful"});
-
-            // ===== Input Validation ===== /
-            // * Uniqueness of Email * //
+            // * Verify Uniqueness of Email
             if (await _db.Users.AnyAsync(u => u.Email == request.Email))
             {
                 return BadRequest(new { error = "Email already exists" });
             }
 
-            var user = new User
+            var newUser = new User
             {
                 Name = request.Name,
                 Email = request.Email,
-                Password = request.Password //TODO: Create HASH for password storage
+                //?: Check to see if Hashing works properly
+                Password = BCryptPasswordHasher.HashPassword(request.Password)
+
             };
 
-            _db.Users.Add(user);
+            _db.Users.Add(newUser);
             await _db.SaveChangesAsync();
-            var auth_response = new AuthResponse
+            var registrationResponse = new AuthResponse
             {
                 Name = request.Name,
                 Email = request.Email,
-                //TODO: Implement JWT to return token
             };
-            return CreatedAtAction(nameof(GetUserById), new { id = user.Id }, auth_response);
+            return CreatedAtAction(
+            nameof(UsersController.GetUserById),
+            "Users",
+            new { id = newUser.Id },
+            registrationResponse);
+        }
+
+        //TODO: || ========== Write Login Handler ========== ||
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login(LoginRequest request,
+        [FromServices] ITokenService JwtTokenService)
+        {
+            //TODO: Incorporate JWT into Login Authentication
+            // var user =
         }
     }
-
 }
