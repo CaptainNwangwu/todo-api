@@ -7,11 +7,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Server.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class UsersController(TodoDbContext db) : ControllerBase
     {
 
@@ -29,7 +31,7 @@ namespace Server.Controllers
         /// If the user with the specified `id` is found in the database, the `Ok` response with the user object
         /// will be returned. If the user is not found (i.e., `null`), a `NotFound` response will be returned.
         /// </returns>
-        [HttpGet("users/id/{id}")]
+        [HttpGet("{id}")]
         public async Task<IActionResult> GetUserById(int id)
         {
             var user = await _db.Users.FindAsync(id);
@@ -48,7 +50,7 @@ namespace Server.Controllers
         /// status code of 200 (OK). If no user is found with the specified email, a status code of 404 (Not
         /// Found) will be returned.
         /// </returns>
-        [HttpGet("users/email/{email}")]
+        [HttpGet("email/{email}")]
         public async Task<IActionResult> GetUserByEmail(string email)
         {
             var user = await _db.Users
@@ -65,7 +67,7 @@ namespace Server.Controllers
         /// <returns>
         /// A list of all users from the database is being returned.
         /// </returns>
-        [HttpGet("users")]
+        [HttpGet("")]
         public async Task<IActionResult> GetAllUsers()
         {
             var users = await _db.Users.ToListAsync();
@@ -86,10 +88,10 @@ namespace Server.Controllers
         /// and successfully deleted, it returns an Ok result with a success message and the deleted user's
         /// data. If the user is not found, it returns a NotFound result.
         /// </returns>
-        [HttpDelete("users/{id}")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUserById(int id)
         {
-            var user = await _db.Users.FindAsync(1);
+            var user = await _db.Users.FindAsync(id);
             if (user is null)
             {
                 return NotFound();

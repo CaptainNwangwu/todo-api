@@ -40,6 +40,7 @@ namespace Server.Controllers
                 return BadRequest(new { error = "Email already exists" });
             }
 
+            // * Verify Password i
             var newUser = new User
             {
                 Name = request.Name,
@@ -63,14 +64,55 @@ namespace Server.Controllers
             registrationResponse);
         }
 
-        //TODO: || ========== Write Login Handler ========== ||
 
+        /// <summary>
+        /// The Login method is a C# method for handling user login requests, verifying credentials,
+        /// generating a JWT token, and returning a response.
+        /// </summary>
+        /// <param name="LoginRequest">The `LoginRequest` parameter in the `Login` method represents the data
+        /// model for the login request. It likely contains properties such as `Email` and `Password` that are
+        /// submitted by the user when attempting to log in to the system. This parameter is used to bind the
+        /// incoming login request data</param>
+        /// <param name="ITokenService">ITokenService is a service interface that provides functionality related
+        /// to generating and validating JSON Web Tokens (JWTs) for user authentication and authorization in the
+        /// application. It typically includes methods for generating tokens based on user information and
+        /// validating tokens during authentication processes.</param>
+        /// <param name="IPasswordHasher">The `IPasswordHasher` interface in the code snippet is used for
+        /// hashing and verifying passwords securely. In this case, it seems to be specifically using the
+        /// `BCryptPasswordHasher` implementation for hashing and verifying passwords using the BCrypt
+        /// algorithm.</param>
+        /// <returns>
+        /// The Login method is returning an IActionResult. If the login is successful, it returns an Ok
+        /// response with a message "Login successful" and a Data object containing the user's name, email, and
+        /// a generated token. If the login is unsuccessful (due to invalid email or password), it returns an
+        /// Unauthorized response with an error message "Invalid email or password".
+        /// </returns>
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginRequest request,
-        [FromServices] ITokenService JwtTokenService)
+        [FromServices] ITokenService JwtTokenService,
+        [FromServices] IPasswordHasher BCryptPasswordHasher)
         {
-            //TODO: Incorporate JWT into Login Authentication
-            // var user =
+            var user = await _db.Users.FirstOrDefaultAsync(u => u.Email == request.Email);
+
+            if (user == null || !BCryptPasswordHasher.VerifyPassword(request.Password, user.Password))
+            {
+                return Unauthorized(new { Error = "Invalid email or password" });
+            }
+
+            var generatedToken = JwtTokenService.GenerateToken(user);
+            var loginResponse = new AuthResponse
+            {
+                Name = user.Name,
+                Email = user.Email,
+                Token = generatedToken
+            };
+
+            return Ok(new
+            {
+                Message = "Login successful",
+                Data = loginResponse
+            });
         }
     }
 }
+

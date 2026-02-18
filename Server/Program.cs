@@ -25,9 +25,9 @@ builder.Services.AddScoped<ITokenService, JwtTokenService>();
 
 builder.Services.AddScoped<IPasswordHasher, BCryptPasswordHasher>();
 
-/* TODO: JWT Auth 
-JWTbuilder.Services.AddAuthentication().AddJwtBearer
-*/
+// FIXME: Ensure JWT Works
+builder.Services.AddAuthentication().AddJwtBearer();
+
 
 // Register DBContext with Postgres
 builder.Services.AddDbContext<TodoDbContext>(options =>
@@ -75,5 +75,4 @@ app.MapControllers();
 // Health check endpoint
 app.MapGet("/", () => "Todo API is running!");
 
-// TODO: Get All Users
 app.Run();
