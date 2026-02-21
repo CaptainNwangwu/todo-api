@@ -25,7 +25,7 @@ public class LoginRequest
     [Required]
     [EmailAddress]
     [StringLength(255)]
-    public string Email { get; set; } = string.Empty;
+    public required string Email { get; set; }
 
     /// <summary>
     /// Gets or sets the user's password for account authentication.
@@ -36,5 +36,5 @@ public class LoginRequest
     /// </remarks>
     [Required]
     [MinLength(8)]
-    public string Password { get; set; } = string.Empty;
+    public required string Password { get; set; }
 }

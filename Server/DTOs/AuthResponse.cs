@@ -30,5 +30,5 @@ public class AuthResponse
     /// This token should be included in the Authorization header of subsequent requests to access protected resources.
     /// The token is issued by the authentication service and contains encoded user information and claims.
     /// </remarks>
-    public string Token { get; set; } = string.Empty;
+    public string? Token { get; set; }
 }
