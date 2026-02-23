@@ -13,5 +13,3 @@ namespace Server.DTOs
         public TodoStatus? Status { get; set; }
     }
 }
-
-// *TODO: Incorporate Todo DTOs into API Controller

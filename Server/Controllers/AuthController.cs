@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Server.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("")]
     public class AuthController(TodoDbContext db) : ControllerBase
     {
         private readonly TodoDbContext _db = db;

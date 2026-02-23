@@ -12,8 +12,8 @@ using Microsoft.AspNetCore.Authorization;
 namespace Server.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
     [Authorize]
+    [Route("/users")]
     public class UsersController(TodoDbContext db) : ControllerBase
     {
 
@@ -37,29 +37,6 @@ namespace Server.Controllers
             var user = await _db.Users.FindAsync(id);
             return user is not null ? Ok(user) : NotFound();
         }
-
-        /// <summary>
-        /// This C# function retrieves a user from a database based on their email address.
-        /// </summary>
-        /// <param name="email">The `HttpGet` attribute in the code snippet indicates that this method is a
-        /// controller action that responds to HTTP GET requests. The route template specified in the attribute
-        /// is `users/email/{email}`, which means this action can be accessed using a URL like
-        /// `/users/email/example@example.com`, where `example@example</param>
-        /// <returns>
-        /// If a user with the specified email is found in the database, the user object will be returned with a
-        /// status code of 200 (OK). If no user is found with the specified email, a status code of 404 (Not
-        /// Found) will be returned.
-        /// </returns>
-        [HttpGet("email/{email}")]
-        public async Task<IActionResult> GetUserByEmail(string email)
-        {
-            var user = await _db.Users
-                .Where(u => u.Email == email)
-                .FirstOrDefaultAsync();
-
-            return user is not null ? Ok(user) : NotFound();
-        }
-
 
         /// <summary>
         /// This C# function retrieves all users from the database and returns them as a response.

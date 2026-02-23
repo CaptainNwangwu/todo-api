@@ -1,48 +1,39 @@
 @server_HostAddress = http://localhost:5043
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjMiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJjaGlkb3ppZS5kLm53YW5nd3VAZ21haWwuY29tIiwiZXhwIjoxNzcxOTIyNTk3LCJpc3MiOiJ0b2RvLWFwaSIsImF1ZCI6InRvZG8tYXBpIn0.9tAGCutpMZOBKNvqiWn2v_Lb0mAoO3QFk9ltTR-2beA
 
-GET {{server_HostAddress}}/
-Accept: application/json
-
-###
-
-POST {{server_HostAddress}}/api/auth/register
+### Register
+POST {{server_HostAddress}}/register
 Content-Type: application/json
 
 {
-    "Name": "CJ Nwangwu",
-    "Email": "captainnwangwu@gmail.com",
-    "Password": "CodingRocks247!"
+    "Name": "Chidozie Nwangwu",
+    "Email": "chidozie.d.nwangwu@gmail.com",
+    "Password": "HookedOnFlays2949"
 }
-### 
-POST {{server_HostAddress}}/api/Auth/register
+
+### Login
+POST {{server_HostAddress}}/login
 Content-Type: application/json
 
 {
-    "Name": "Chido Nwangwu",
-    "Email": "chido247@gmail.com",
-    "Password": "USAfrica247"
+    "Email": "chidozie.d.nwangwu@gmail.com",
+    "Password": "HookedOnFlays2949"
 }
 
-### 
-POST {{server_HostAddress}}/api/Auth/login
+### Get User (protected)
+GET {{server_HostAddress}}/Users/3
+Authorization: Bearer {{token}}
+
+### Create Todo (protected)
+POST {{server_HostAddress}}/todos
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 {
-    "Email": "chido247@gmail.com",
-    "Password": "USAfrica247"
+    "Title": "Finish JWT implementation",
+    "Description": "Wire up the middleware"
 }
 
-### 
-POST {{server_HostAddress}}/api/Auth/login
-Content-Type: application/json
-
-{
-    "Email": "captainnwangwu@gmail.com",
-    "Password": "CodingRocks247"
-}
-
-###
-GET {{server_HostAddress}}/api/Users/1
-Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjIiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJjaGlkbzI0N0BnbWFpbC5jb20iLCJleHAiOjE3NzE3ODI0NzgsImlzcyI6InRvZG8tYXBpIiwiYXVkIjoidG9kby1hcGkifQ.OdAc-Fkzp4N8ddwKc45-4Fvf2fx25QudqZxTc1ZgArM
-###
+### Get Todos (protected)
+GET {{server_HostAddress}}/todos?page=1&limit=10
+Authorization: Bearer {{token}}
