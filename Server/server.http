@@ -1,5 +1,6 @@
 @server_HostAddress = http://localhost:5043
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjMiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJjaGlkb3ppZS5kLm53YW5nd3VAZ21haWwuY29tIiwiZXhwIjoxNzcxOTIyNTk3LCJpc3MiOiJ0b2RvLWFwaSIsImF1ZCI6InRvZG8tYXBpIn0.9tAGCutpMZOBKNvqiWn2v_Lb0mAoO3QFk9ltTR-2beA
+# Replace token with token generated from login
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpX...
 
 ### Register
 POST {{server_HostAddress}}/register
@@ -7,8 +8,8 @@ Content-Type: application/json
 
 {
     "Name": "Chidozie Nwangwu",
-    "Email": "chidozie.d.nwangwu@gmail.com",
-    "Password": "HookedOnFlays2949"
+    "Email": "cn@gmail.com",
+    "Password": "HookedOnFlays4Life"
 }
 
 ### Login
@@ -16,8 +17,8 @@ POST {{server_HostAddress}}/login
 Content-Type: application/json
 
 {
-    "Email": "chidozie.d.nwangwu@gmail.com",
-    "Password": "HookedOnFlays2949"
+    "Email": "cn@gmail.com",
+    "Password": "HookedOnFlays4Life"
 }
 
 ### Get User (protected)
@@ -35,5 +36,54 @@ Authorization: Bearer {{token}}
 }
 
 ### Get Todos (protected)
-GET {{server_HostAddress}}/todos?page=1&limit=10
+GET {{server_HostAddress}}/todos?page=1&limit=10&sortBy=title&sortOrder=desc
 Authorization: Bearer {{token}}
+
+### Create Todos (1)
+POST {{server_HostAddress}}/todos
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "Title": "Pay bills",
+    "Description": "Pay electricity and water bills"
+}
+### Create Todos (2)
+POST {{server_HostAddress}}/todos
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "Title": "Buy groceries",
+    "Description": "Buy milk, eggs, bread"
+}
+
+### Create Todos (3)
+POST {{server_HostAddress}}/todos
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "Title": "Finish schoolwork",
+    "Description": "Finish SER515 HW#1 & CS565 HW#2"
+}
+### Create Todos(4)
+POST {{server_HostAddress}}/todos
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "Title": "Buy Lunch",
+    "Description": "Get Burrito Bowl from Chipotle by 1:15PM"
+}
+### Update Todo (protected)
+PATCH {{server_HostAddress}}/todos/3
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "Title": "Finish Testing API Endpoints",
+    "Description": "Ensure that filtering & sorting works properly",
+    "Status": 1
+}
+###
